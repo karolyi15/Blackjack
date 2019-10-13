@@ -1,0 +1,78 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-advanced-reader.ss" "lang")((modname |logica del juego|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #t #t none #f () #f)))
+
+;;funcion que recibe la lista con los jugadores y valida que la cantidad de jugadores sea de 1 a 3
+;;si la cantidad de jugadores es correcta le pasa la lista a la funcion "start"
+;;X >>> lista de jugadores
+(define (bCEj X)
+  (cond ((null? X)
+         'no hay jugadores')
+        ((equal? 4 (howMany X))
+         'mas de tres jugadores')
+        (else
+         (start X))))
+
+
+;;funcion que cuenta la cantidad de jugadores participando y devuelve este numero
+;;Plist >>> lista de jugadores
+(define (howMany Plist)
+  (cond ((null? Plist)
+         0)
+        (else
+         (+ 1 (largo (cdr lista))))))
+
+
+;;funcion que recibe la lista de jugadores y pone a jugar a cada uno
+;;Plist >>> lista de jugadores
+(define (start Plist)
+  (cond ((equal? 1 (howMany X))
+         play (car Plist))
+        (else
+         ((play (car Plist))
+          (start (cdr Plist))))))
+
+
+(define (play player)
+  (equal?
+
+;;funcion que planta a un jugador cuando este decide hacerlo y lo saca de la lista de jugadores
+;;player >>> jugador que decidio plantarse
+;;Plist >>> lista de jugadores
+(define (takeOut player Plist)
+  (cond ((null? Plist)
+         '())
+        ((equal? player (car Plist))
+         (cdr Plist))
+        (else
+         (cons (car Plist) (takeOut player (cdr Plist))))))
+
+
+;;funcion que termina el juego si el jugador que decide plantarse es el unico participando
+;;player >>> jugador que decidio plantarse
+;;Plist >>> lista de jugadores
+(define (stay player Plist)
+  (cond ((and (equal? 1 (howMany Plista)) (equal? player (car Plista)))
+         'se acabo el juego')
+
+
+;;funcion que le da una carta al jugador en turno, si este asi lo decide
+;;player >>> jugador que pide la carta
+(define (askCard player)
+  (cond ((
+
+
+;;funcion principal para el rival virtual
+(define (crupier player)         
+solicita cartas cuando sus puntos sean 16 o menos sino se planta
+
+(define (secretCard crupier)
+
+
+(define (showHiddenCard card)
+
+
+(define (cardRequest Plist)
+
+
+(define (gameOver dataList)
