@@ -68,8 +68,7 @@
 (new button%[parent panel]
      [label "Ok"]
      [callback (lambda (button event)
-                 (nameOutPut (send playerName1 get-value) (send playerName2 get-value) (send playerName3 get-value))
-                                           )])
+                 (nameOutPut (send playerName1 get-value) (send playerName2 get-value) (send playerName3 get-value)) (send players-dialog show #f) (send frame show #f) )])
 
 (new button%[parent panel][label "Cancel"])
 
