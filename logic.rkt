@@ -74,6 +74,14 @@
 
 ;***************************************************************************
 
+(define (ver lista) 
+  (cond ((null? lista) 
+         (print ">>>fin de la lista"))
+        ((equal? (null? lista) #f)
+         (print (car lista))
+         (print " - ")
+         (ver (cdr lista)))))
+
 ;;funcion que cuenta la cantidad de jugadores participando y devuelve este numero
 ;;Plist >>> lista de jugadores
 (define (howMany Plist)
@@ -85,6 +93,7 @@
 ;;funcion de maneja los movimientos del jugador
 ;;ya sea que pida una carta, se plante o se pase de 21
 (define (play Plist)
+  (ver Plist)
   (initTable))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -94,36 +103,18 @@
          '())
         (else
          (cons (list (car lista1) (car lista2)) (wrapper (cdr lista1) (cdr lista2))))))
-
-  
-;;funcion que recibe la lista de jugadores y hace jugar a cada uno
-;;Plist >>> lista de jugadores
-(define (start Plist)
-  (cond ((null? Plist)
-         (print " >>> fin de 1 ronda"))  ;falta validar que el juego se haya terminado porque los jugadores salieron (en vez de jugar una ronda cada uno)
-        (else
-         (play (wrapper Plist '(0 0 0)))))) ;se inicia la puntuacion de cada jugador a cero
-         
+    
 
 ;;funcion que recibe la lista con los jugadores y valida que la cantidad de jugadores sea de 1 a 3
 ;;si la cantidad de jugadores es correcta le pasa la lista a la funcion "start"
 ;;X >>> lista de jugadores
 (define (bCEj X)
   (cond ((null? X)
-         (print "no hay jugadores"))
+         (print " no hay jugadores "))
         ((equal? 4 (howMany X))
          (print "hay mas de tres jugadores"))
         (else
-         ;(print "EMPEZAR JUEGO")
-         (start X))))
-
-(define (ver lista) 
-  (cond ((null? lista) 
-         (print "fin de la lista"))
-        ((equal? (null? lista) #f)
-         (print (car lista))
-         (print " - ")
-         (ver (cdr lista)))))
+         (play (wrapper X '(0 0 0))))))
 
 ;This function does the permutations and inserts them in the text output.
 (define (nameOutPut text1 text2 text3) 
