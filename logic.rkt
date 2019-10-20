@@ -2,6 +2,7 @@
 #lang racket
 (require racket/gui/base)
 (require "tablero.rkt")
+(#%require (only racket/base random))
 
 ;(require rsound)
 ;(require 2htdp/image)
@@ -68,7 +69,7 @@
 (new button%[parent panel]
      [label "Ok"]
      [callback (lambda (button event)
-                 (nameOutPut (send playerName1 get-value) (send playerName2 get-value) (send playerName3 get-value)) (send players-dialog show #f) (send frame show #f) )])
+                 (nameOutPut '() (send playerName1 get-value) (send playerName2 get-value) (send playerName3 get-value)) (send players-dialog show #f) (send frame show #f) )])
 
 (new button%[parent panel][label "Cancel"])
 
@@ -76,10 +77,10 @@
 
 (define (ver lista) 
   (cond ((null? lista) 
-         (print ">>>fin de la lista"))
+         (print "  *  "))
         ((equal? (null? lista) #f)
          (print (car lista))
-         (print " - ")
+         (print "   ")
          (ver (cdr lista)))))
 
 ;;funcion que cuenta la cantidad de jugadores participando y devuelve este numero
@@ -109,21 +110,68 @@
 ;;si la cantidad de jugadores es correcta le pasa la lista a la funcion "start"
 ;;X >>> lista de jugadores
 (define (bCEj X)
-  (cond ((null? X)
-         (print " no hay jugadores "))
-        ((equal? 4 (howMany X))
+  (cond ((equal? 4 (howMany X))
          (print "hay mas de tres jugadores"))
-        (else
-         (play (wrapper X '(0 0 0))))))
+        ((equal? 3 (howMany X))
+         (play (wrapper X '(0 0 0))))
+        ((equal? 2 (howMany X))
+         (play (wrapper X '(0 0))))
+        ((equal? 1 (howMany X))
+         (play (wrapper X '(0))))
+        ((null? X)
+         (print " no hay jugadores "))))
+        
 
-;This function does the permutations and inserts them in the text output.
-(define (nameOutPut text1 text2 text3) 
-  (define lista (list text1 text2 text3))
-  (bCEj lista))
+;funcion que agrega a la lista con los nombres de los jugadores solo si el string no esta vacio
+(define (nameOutPut pList text1 text2 text3)
+  (cond ((and (not(non-empty-string? text2)) (not (non-empty-string? text3)))
+         (bCEj (cons text1 pList)))
+        ((not (non-empty-string? text3))
+         (bCEj (cons text1 (cons text2 pList))))
+        (else
+         (bCEj (cons text1 (cons text2 (cons text3 pList)))))))
+   
+  
  
 
+;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+;metodos para cada partida del juego
+
+;funcion que guarda en una lista 52 numeros aleatorios entre el 1 y el 11
+(define (shuffle deck)
+  (for ([i (in-range 52)])
+     (cons (+ 1 (random 11)) deck))
+  (ver deck))
 
 
+;;funcion que planta a un jugador cuando este decide hacerlo y lo saca de la lista de jugadores
+;;player >>> jugador que decidio plantarse
+;;Plist >>> lista de jugadores
+(define (stay player Plist)
+  (cond ((and (equal? 1 (howMany Plist)) (equal? player (car Plist))) ;si decide plantarse y solo hay 1 jugador y este es igual a la lista que se uso como parametro
+         (printf "se acabo el juego")) ;funcion para terminar la partida
+        ((equal? player (car Plist))
+         (printf "se continua sin este jugador que decidio plantarse")) ;funcion para continuar el juego
+        (else
+         (cons (car Plist) (stay player (cdr Plist)))))) ;se continua buscando en el resto de la lista
+
+
+
+
+;funcion para actualizar el puntaje 
+(define (updatePoints player newPoints)
+  (cons (car player) (cons (+ (cadr player) newPoints)  (cddr player))))
+
+
+;;funcion que le da una carta al jugador en turno, si este asi lo decide
+;;player >>> jugador que pide la carta
+(define (askCard player card)
+  (cond ((> (+ (cadr player) card) 21)
+         (print "perdio porque se paso de 21"))
+        ((equal? (+ (car player) card) 21)
+         (print "logro 21"))  
+        ((< (+ (cadr player) card) 21)
+         (updatePoints player card))))
 
 
 
