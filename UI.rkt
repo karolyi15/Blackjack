@@ -1,54 +1,58 @@
-;Import librery
-
 #lang racket
+;*********************************************Imports*****************************************************
 (require games/cards
-         ;racket/gui/base
          racket/class
-         racket/unit
-         2htdp/image)
+         racket/unit)
 
-
-;*************************************
+;**********************************************Init Function**********************************************
+(define (initTable)
+;********************************Fields******************************
 (define margin 10)
-(define submargin 10)
-(define labelH 15)
-;Load image
-(define background(bitmap "imgs/table.jpg"))
-;*************************************
+(define marginTop 10)
+;**********************************Table*****************************  
 ;Create table
 (define table(make-table "BlackJack" 10 5))
 ;Show table
 (send table show #t)
-
-;Unable doble click
-(send table set-double-click-action #f)
-
 ;Get table size
 (define tableH(send table table-height))
 (define tableW(send table table-width))
-;*************************************
+;Unable doble click
+(send table set-double-click-action #f)
+
+;********************************Cards*******************************
 ;List of cards
 (define deck(make-deck))
-
+  
 ;Get cards size
 (define cardH(send (car deck) card-height))
 (define cardW(send (car deck) card-width))
-;Static cards
-(for-each (lambda (card) (send* card (user-can-move #f) (user-can-flip #f))) deck)
-;*************************************
-(define buttonH 16)
-(define buttonW cardW)
+  
+;Static cards(user cant move)
+;(for-each (lambda (card) (send* card (user-can-move #f) (user-can-flip #f))) deck)
+  
+;*****************************regions********************************
+;Deck Region
+(define deck-region(make-region margin marginTop cardW cardH #f #f ))
+;Dealer Region
+(define dealer-region(make-region (-(/ tableW 2) cardW) (* marginTop 7) (* cardW 2) cardH #f #f ))
+;Player 1 Region
+(define player1-region(make-region (* margin 6) (- tableH cardH (* marginTop 8)) (* cardW 2) cardH #f #f ))
+;Player 2 Region
+(define player2-region(make-region (-(/ tableW 2) cardW) (- tableH cardH (* marginTop 8)) (* cardW 2) cardH #f #f ))
+;Player 3 Region
+(define player3-region(make-region (- tableW (* cardW 2) (* margin 6))(- tableH cardH (* marginTop 8)) (* cardW 2) cardH #f #f ))
 
-(define stand(make-button-region 355 30 25 25 "Stand" #f))
-;*************************************
+;*****************************Set Up Game****************************
+(send table add-cards-to-region deck dealer-region)
 
-(define deck-region(make-region margin margin cardW cardH #f #f))
-(define dealer-region(make-region 355 margin (* cardW 2) cardH #f #f))
-(define player-region(make-region(/ tableW 2) (- tableH margin)(* cardW 2)cardH #f #f))
 
-;(define background-region(make-background-region 0 0 tableW tableH (paint-callback background)))
-;*************************************
-(send table add-cards-to-region deck deck-region)
-(send table flip-card (car deck))
-(send table move-card (car deck) 355 10)
-;(send table move-cards-to-region (cdr deck) dealer-region)
+
+
+
+  
+  )
+
+
+;*******************************************Call Init Function********************************************
+(initTable)
