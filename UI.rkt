@@ -1,10 +1,13 @@
 #lang racket
-;*********************************************Imports*****************************************************
+;***************************************************Imports*****************************************************
 (require games/cards
          racket/class
-         racket/unit)
+         racket/unit
+         racket/gui/base)
 
-;**********************************************Init Function**********************************************
+(provide initTable)
+(provide initMenu)
+;**********************************************Init Table Function**********************************************
 (define (initTable)
 ;********************************Fields******************************
 (define margin 10)
@@ -32,6 +35,8 @@
 ;(for-each (lambda (card) (send* card (user-can-move #f) (user-can-flip #f))) deck)
   
 ;*****************************regions********************************
+;Background Region
+;(define background-region(make-background-region 0 0 tableW tableH #f))
 ;Deck Region
 (define deck-region(make-region margin marginTop cardW cardH #f #f ))
 ;Dealer Region
@@ -45,14 +50,50 @@
 
 ;*****************************Set Up Game****************************
 (send table add-cards-to-region deck dealer-region)
-
-
-
-
-
   
+  )
+;*********************************************Init Main Menu Function*******************************************
+
+(define (initMenu)
+;****************************Window**********************************
+  
+(define frame(new frame% [label"BlackJack"]
+                  [width 700]
+                  [height 500]))
+  
+;*****************************Containers*****************************
+(define mainPanel(new panel%[parent frame]))
+
+(define button-container(new vertical-panel%[parent mainPanel]))
+  
+;****************************Buttons*********************************
+  
+ ;Start Button
+(define start-button(new button%[parent button-container]
+                         [label "Start"]
+                         ;[callback (lambda (button event)(send players-dialog show #t))]
+                         [min-width 200]
+                         [min-height 25]))
+  ;Radio Button (Players Number)
+  (define players(new radio-box%[label ""]
+                    [choices '("1 Player" "2 Players" "3 Players")]
+                    [parent button-container]
+                 ;   [callback (lambda (button event)
+                  ;                         (deshabilitar (send players get-selection))
+
+))
+                    ;)])) 
+  ;Info Button
+  (define about-button(new button%[parent button-container]
+                         [label "About"]
+                         ;[callback (lambda (button event)(send about-dialog show #t))]
+                         [min-width 200]
+                         [min-height 25]))
+;********************************************************************
+;Show Main Menu
+(send frame show #t)
   )
 
 
-;*******************************************Call Init Function********************************************
-(initTable)
+;*******************************************Call Init Function**************************************************
+(initMenu)
