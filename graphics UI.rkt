@@ -130,6 +130,7 @@
 
 ;Update Pixmap
 (define (update pixmap)
+  (clear-viewport window)
   (copy-viewport pixmap window))
 
 ;Mouse Menu Events
@@ -155,17 +156,17 @@
 ;Mouse Table Events
 (define (mouseTable-event click)
   (cond
-    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
-          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
-    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
-          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
+    ((and (<= 570 (posn-x (mouse-click-posn click)) 690)
+          (<= 455 (posn-y (mouse-click-posn click)) 490)) (update players))
+    ((and (<= 440 (posn-x (mouse-click-posn click)) 560)
+          (<= 455 (posn-y (mouse-click-posn click)) 490)) (update players))
     (else (mouseTable-event(get-mouse-click window) ))))
 
 ;Start
 (define (initGame)
-  (update players)
+  (update table)
   ;(music)
-  (mousePlayers-event(get-mouse-click window))
+  (mouseTable-event(get-mouse-click window))
   )
 
 
