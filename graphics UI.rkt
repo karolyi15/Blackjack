@@ -30,6 +30,8 @@
 
 ;Draw Main Menu(Pixmap)
 (define menu(open-pixmap "menu" windowW windowH))
+;Draw About(Pixmap)
+(define about(open-pixmap "about" windowW windowH))
 ;Draw Select Players(Pixmap)
 (define players(open-pixmap "players" windowW windowH))
 ;Draw Table(Pixmap)
@@ -43,7 +45,7 @@
 ;Background
 (define menuBackground-image((draw-pixmap menu) "imgs/table.png" (make-posn 0 0)))
 ;Logo Image
-(define logo-image((draw-pixmap menu) "imgs/logo.jpg" (make-posn (/ (- windowW 201) 2) 70)))
+(define logo-image((draw-pixmap menu) "imgs/logon.jpg" (make-posn (/ (- windowW 201) 2) 70)))
 
 ;******Buttons*******
 
@@ -57,6 +59,10 @@
 ;About Button Text
 (define aboutButtonText((draw-string menu)(make-posn (/ (- windowW 40) 2) 365) "About" "black"))
 
+;*******Text*********
+
+;Version
+(define versionLabel((draw-string menu)(make-posn margin (- windowH margin)) "Version 1.0" "yellow"))
   
 ;********************************************************INIT PLAYERS SELECT****************************************************************
 ;******Images********
@@ -121,6 +127,31 @@
 ;Player3
 (define player3Title((draw-string score)(make-posn 10 40) "Player 3:" "yellow"))
 
+;******Buttons*******
+;********************************************************INIT ABOUT FRAME******************************************************************
+
+
+;******Images********
+
+;Information
+(define aboutBackground-image((draw-pixmap about) "imgs/about.png" (make-posn 0 0)))
+
+;*******Text*********
+
+;Info Bar
+(define aboutBar((draw-solid-rectangle about)(make-posn 0 (- windowH (* buttonH 3.2))) windowW (* buttonH 5) "black"))
+;Info Message
+(define aboutMessage((draw-string about)(make-posn (* margin 2) (- windowH (* margin 4))) "Version 1.0" "yellow"))
+
+;******Buttons*******
+
+;Back Button
+(define backButton((draw-solid-rectangle about)(make-posn (- windowW margin buttonW) (- windowH buttonH margin)) buttonW buttonH "gray"))
+;Stand Button Text
+(define backButtonText((draw-string about)(make-posn (- windowW margin buttonW) (- windowH (* margin 2))) "Back" "black"))
+
+
+
 ;******************************************************************************************************************************************
 ;*****Functions******
 
@@ -136,6 +167,7 @@
     ((equal? pixmap menu)(mouseMenu-event(get-mouse-click window)))
     ((equal? pixmap players)(mousePlayers-event(get-mouse-click window)))
     ((equal? pixmap table)(mouseTable-event(get-mouse-click window)))
+    ((equal? pixmap about)(mouseAbout-event(get-mouse-click window)))
    )
   )
 
@@ -145,8 +177,16 @@
     ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
           (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
     ((and (<= 260 (posn-x (mouse-click-posn click)) 440)
-          (<= 345 (posn-y (mouse-click-posn click)) 380)) (update players))
+          (<= 345 (posn-y (mouse-click-posn click)) 380)) (update about))
     (else (mouseMenu-event(get-mouse-click window) ))))
+
+;Mouse About Events
+(define (mouseAbout-event click)
+  (cond
+    ((and (<= 570 (posn-x (mouse-click-posn click)) 690)
+          (<= 455 (posn-y (mouse-click-posn click)) 490)) (update menu))
+    (else (mouseAbout-event(get-mouse-click window) ))))
+
 
 ;Mouse Player Events
 (define (mousePlayers-event click)
