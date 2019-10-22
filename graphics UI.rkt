@@ -4,6 +4,8 @@
 (require games/cards)
 (require 2htdp/image)
 
+(provide initGame)
+
 (open-graphics)
 
 
@@ -49,6 +51,7 @@
 (define startButton((draw-solid-rectangle menu)(make-posn (/ (- windowW (* buttonW 2)) 2) 290) (* buttonW 2) buttonH "gray"))
 ;Start Button Text
 (define startButtonText((draw-string menu)(make-posn (/ (- windowW 30) 2) 310) "Start" "black"))
+
 ;About Button
 (define aboutButton((draw-solid-rectangle menu)(make-posn (/ (- windowW (* buttonW 1.5)) 2) (+ buttonH 310)) (* buttonW 1.5) buttonH "gray"))
 ;About Button Text
@@ -134,24 +137,36 @@
   (cond
     ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
           (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
-    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
-          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
+    ((and (<= 260 (posn-x (mouse-click-posn click)) 440)
+          (<= 345 (posn-y (mouse-click-posn click)) 380)) (update players))
     (else (mouseMenu-event(get-mouse-click window) ))))
 
 ;Mouse Player Events
 (define (mousePlayers-event click)
   (cond
     ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 157.5 (posn-y (mouse-click-posn click)) 192.5)) (update table))
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 232.5 (posn-y (mouse-click-posn click)) 267.5)) (update table))
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 307.5 (posn-y (mouse-click-posn click)) 342.5)) (update table))
+    (else (mousePlayers-event(get-mouse-click window) ))))
+
+;Mouse Table Events
+(define (mouseTable-event click)
+  (cond
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
           (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
     ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
           (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
-    (else (mousePlayers-event(get-mouse-click window) ))))
+    (else (mouseTable-event(get-mouse-click window) ))))
 
 ;Start
 (define (initGame)
-  (update menu)
-  (music)
-  (mouseMenu-event(get-mouse-click window)))
+  (update players)
+  ;(music)
+  (mousePlayers-event(get-mouse-click window))
+  )
 
 
 
