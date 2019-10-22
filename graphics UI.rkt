@@ -46,10 +46,20 @@
 ;About Button Text
 (define aboutButtonText((draw-string menu)(make-posn (/ (- windowW 40) 2) 365) "About" "black"))
 ;******************************************************************************************************************************************
+;******Images********
 
+(define playerBackground-image((draw-pixmap players) "imgs/table.png" (make-posn 0 0)))
 
+;******Buttons*******
+;Accept Button
+(define acceptButton((draw-solid-rectangle players)(make-posn (- windowW margin buttonW) (- windowH buttonH margin)) buttonW buttonH "gray"))
+;Accept Button Text
+(define acceptButtonText((draw-string  players)(make-posn (- windowW margin buttonW) (- windowH (* margin 2))) "Accept" "black"))
 
-
+;Cancel Button
+(define cancelButton((draw-solid-rectangle  players)(make-posn (- windowW (* margin 2) (* buttonW 2))(- windowH buttonH margin)) buttonW buttonH "gray"))
+;Cancel Button Text
+(define cancelButtonText((draw-string  players)(make-posn (- windowW (* margin 2) (* buttonW 2)) (- windowH (* margin 2))) "Cancel" "black"))
 
 ;******************************************************************************************************************************************
 ;******Images********
@@ -93,4 +103,4 @@
 
 
 
-(copy-viewport score window)
+(copy-viewport players window)
