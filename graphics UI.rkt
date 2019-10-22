@@ -35,7 +35,7 @@
 ;Draw Score(Pixmap)
 (define score(open-pixmap "score" windowW windowH))
 
-;******************************************************************************************************************************************
+;********************************************************INIT MAIN MENU*********************************************************************
 ;******Images********
 
 ;Background
@@ -53,7 +53,9 @@
 (define aboutButton((draw-solid-rectangle menu)(make-posn (/ (- windowW (* buttonW 1.5)) 2) (+ buttonH 310)) (* buttonW 1.5) buttonH "gray"))
 ;About Button Text
 (define aboutButtonText((draw-string menu)(make-posn (/ (- windowW 40) 2) 365) "About" "black"))
-;******************************************************************************************************************************************
+
+  
+;********************************************************INIT PLAYERS SELECT****************************************************************
 ;******Images********
 
 (define playerBackground-image((draw-pixmap players) "imgs/table.png" (make-posn 0 0)))
@@ -75,7 +77,7 @@
 ;Player 3 Button Text
 (define player3ButtonText((draw-string  players)(make-posn (/ (- windowW (* buttonW 2) -175) 2) (/ (- windowH buttonH -185) 2)) "3 Players" "black"))
 
-;******************************************************************************************************************************************
+;**********************************************************INIT TABLE**********************************************************************
 ;******Images********
 
 ;Table Image
@@ -101,7 +103,7 @@
 ;Card Button Text
 (define cardButtonText((draw-string table)(make-posn (- windowW (* margin 2) (* buttonW 2)) (- windowH (* margin 2))) "Card" "black"))
 
-;******************************************************************************************************************************************
+;********************************************************INIT SCORE VIEW*******************************************************************
 ;******Images********
 (define scoreBackground-image((draw-pixmap score) "imgs/table.png" (make-posn 0 0)))
 
@@ -119,26 +121,38 @@
 ;******************************************************************************************************************************************
 ;*****Functions******
 
+;Music
+(define (music)
+  (play-sound "sound/music.wav" #t))
 
+;Update Pixmap
 (define (update pixmap)
   (copy-viewport pixmap window))
 
-(define (mouse-event click)
+;Mouse Menu Events
+(define (mouseMenu-event click)
   (cond
     ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
           (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
-    (else (mouse-event(get-mouse-click window) ))))
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
+    (else (mouseMenu-event(get-mouse-click window) ))))
+
+;Mouse Player Events
+(define (mousePlayers-event click)
+  (cond
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
+    (else (mousePlayers-event(get-mouse-click window) ))))
+
+;Start
+(define (initGame)
+  (update menu)
+  (music)
+  (mouseMenu-event(get-mouse-click window)))
 
 
 
-;Music
-(define (music)
-  (play-sound "sound/music.wav" #t)
-  (music))
-
-
-
-
-(copy-viewport menu window)
-;(music)
-(mouse-event(get-mouse-click window))
+(initGame)
