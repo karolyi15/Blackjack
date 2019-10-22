@@ -131,7 +131,13 @@
 ;Update Pixmap
 (define (update pixmap)
   (clear-viewport window)
-  (copy-viewport pixmap window))
+  (copy-viewport pixmap window)
+  (cond
+    ((equal? pixmap menu)(mouseMenu-event(get-mouse-click window)))
+    ((equal? pixmap players)(mousePlayers-event(get-mouse-click window)))
+    ((equal? pixmap table)(mouseTable-event(get-mouse-click window)))
+   )
+  )
 
 ;Mouse Menu Events
 (define (mouseMenu-event click)
@@ -164,9 +170,8 @@
 
 ;Start
 (define (initGame)
-  (update table)
+  (update menu)
   ;(music)
-  (mouseTable-event(get-mouse-click window))
   )
 
 
