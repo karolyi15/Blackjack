@@ -47,6 +47,10 @@
 (define aboutButtonText((draw-string menu)(make-posn (/ (- windowW 40) 2) 365) "About" "black"))
 ;******************************************************************************************************************************************
 
+
+
+
+
 ;******************************************************************************************************************************************
 ;******Images********
 
@@ -79,10 +83,14 @@
 ;*******Text*********
 
 ;Title
+(define scoreTitle((draw-string score)(make-posn 10 10) "Scores" "yellow"))
 ;Player1
+(define player1Title((draw-string score)(make-posn 10 20) "Player 1:" "yellow"))
 ;Player2
+(define player2Title((draw-string score)(make-posn 10 30) "Player 2:" "yellow"))
 ;Player3
+(define player3Title((draw-string score)(make-posn 10 40) "Player 3:" "yellow"))
 
 
 
-(copy-viewport menu window)
+(copy-viewport score window)
