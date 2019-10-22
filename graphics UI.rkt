@@ -1,10 +1,12 @@
-#lang racket
+#lang racket/gui
 
 (require graphics/graphics)
 (require games/cards)
 (require 2htdp/image)
 
 (open-graphics)
+
+
 ;*******Fields*******
 
 (define margin 10)
@@ -14,19 +16,25 @@
 ;Buttons Size
 (define buttonW 120)
 (define buttonH 35)
+;Cards Size
+(define cardW 65)
+(define cardH 100)
+
 
 ;******Windows*******
 
 ;Window (Viewport)
 (define window(open-viewport "Blackjack" windowW windowH))
+
 ;Draw Main Menu(Pixmap)
 (define menu(open-pixmap "menu" windowW windowH))
 ;Draw Select Players(Pixmap)
 (define players(open-pixmap "players" windowW windowH))
-;Draw Window(Pixmap)
+;Draw Table(Pixmap)
 (define table(open-pixmap "table" windowW windowH))
 ;Draw Score(Pixmap)
 (define score(open-pixmap "score" windowW windowH))
+
 ;******************************************************************************************************************************************
 ;******Images********
 
@@ -51,21 +59,28 @@
 (define playerBackground-image((draw-pixmap players) "imgs/table.png" (make-posn 0 0)))
 
 ;******Buttons*******
-;Accept Button
-(define acceptButton((draw-solid-rectangle players)(make-posn (- windowW margin buttonW) (- windowH buttonH margin)) buttonW buttonH "gray"))
-;Accept Button Text
-(define acceptButtonText((draw-string  players)(make-posn (- windowW margin buttonW) (- windowH (* margin 2))) "Accept" "black"))
 
-;Cancel Button
-(define cancelButton((draw-solid-rectangle  players)(make-posn (- windowW (* margin 2) (* buttonW 2))(- windowH buttonH margin)) buttonW buttonH "gray"))
-;Cancel Button Text
-(define cancelButtonText((draw-string  players)(make-posn (- windowW (* margin 2) (* buttonW 2)) (- windowH (* margin 2))) "Cancel" "black"))
+;Player 1 Button
+(define player1Button((draw-solid-rectangle players)(make-posn (/ (- windowW (* buttonW 2)) 2) (/ (- windowH buttonH 150) 2)) (* buttonW 2) buttonH "gray"))
+;Player 1 Button Text
+(define player1ButtonText((draw-string  players)(make-posn (/ (- windowW (* buttonW 2) -170) 2) (/ (- windowH buttonH 115) 2)) " 1 Player" "black"))
+
+;Player 2 Button
+(define player2Button((draw-solid-rectangle  players)(make-posn (/ (- windowW (* buttonW 2)) 2)(/ (- windowH buttonH) 2)) (* buttonW 2) buttonH "gray"))
+;Player 2 Button Text
+(define player2ButtonText((draw-string  players)(make-posn (/ (- windowW (* buttonW 2) -175) 2) (/ (- windowH buttonH -35) 2)) "2 Players" "black"))
+
+;Player 3 Button
+(define player3Button((draw-solid-rectangle  players)(make-posn (/ (- windowW (* buttonW 2)) 2)(/ (- windowH buttonH -150) 2)) (* buttonW 2) buttonH "gray"))
+;Player 3 Button Text
+(define player3ButtonText((draw-string  players)(make-posn (/ (- windowW (* buttonW 2) -175) 2) (/ (- windowH buttonH -185) 2)) "3 Players" "black"))
 
 ;******************************************************************************************************************************************
 ;******Images********
 
 ;Table Image
 (define table-image((draw-pixmap table) "imgs/table.png" (make-posn 0 0)))
+(define card-image((draw-pixmap table) "imgs/AD.png" (make-posn 10 10)))
 
 ;****Status Bar******
 
@@ -101,6 +116,29 @@
 ;Player3
 (define player3Title((draw-string score)(make-posn 10 40) "Player 3:" "yellow"))
 
+;******************************************************************************************************************************************
+;*****Functions******
 
 
-(copy-viewport players window)
+(define (update pixmap)
+  (copy-viewport pixmap window))
+
+(define (mouse-event click)
+  (cond
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
+    (else (mouse-event(get-mouse-click window) ))))
+
+
+
+;Music
+(define (music)
+  (play-sound "sound/music.wav" #t)
+  (music))
+
+
+
+
+(copy-viewport menu window)
+;(music)
+(mouse-event(get-mouse-click window))
