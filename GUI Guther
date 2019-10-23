@@ -77,6 +77,20 @@
 ;Player 3 Button Text
 (define player3ButtonText((draw-string  players)(make-posn (/ (- windowW (* buttonW 2) -175) 2) (/ (- windowH buttonH -185) 2)) "3 Players" "black"))
 
+;Music
+(define (music)
+  (play-sound "sound/music.wav" #t))
+
+;Update Pixmap
+(define (update pixmap)
+  (copy-viewport pixmap window))
+
+;Start
+(define (initGame)
+  (update table)
+  (music))
+  ;(mouseMenu-event(get-mouse-click window)))
+
 ;**********************************************************INIT TABLE**********************************************************************
 ;******Images********
 
@@ -106,15 +120,21 @@
 (define (startDist Plist cList x)
   (cond ((equal? (howMany Plist) 3)
          ((draw-pixmap table) (cardName cList) (make-posn x 300))
-          ((draw-pixmap table) (cardName (cdr cardList)) (make-posn (+ x 20) 300))
-          (startDist (cdr Plist) (cddr cList) (+ x 200)))
+          ((draw-pixmap table) (cardName (cdr cList)) (make-posn (+ x 20) 300))
+          (startDist (cdr Plist) (cddr cList) (+ x 200))
+          (update table)  NO ACTUALIZA
+          (deckAvailable (cddr cList) 10 10))
         ((equal? (howMany Plist) 2)
          ((draw-pixmap table) (cardName cList) (make-posn x 300))
           ((draw-pixmap table) (cardName (cdr cList)) (make-posn (+ x 20) 300))
-          (startDist (cdr Plist) (cddr cList) (+ x 200)))
+          (startDist (cdr Plist) (cddr cList) (+ x 200))
+          (update table)  NO ACTUALIZA
+          (deckAvailable (cddr cList) 10 10))
         ((equal? (howMany Plist) 1)
          ((draw-pixmap table) (cardName cList) (make-posn x 300))
-         ((draw-pixmap table) (cardName (cdr cList)) (make-posn (+ x 20) 300)))))
+         ((draw-pixmap table) (cardName (cdr cList)) (make-posn (+ x 20) 300))
+         (update table)  NO ACTUALIZA
+         (deckAvailable (cddr cList) 10 130))))
 
 ;Table Image
 (define table-image((draw-pixmap table) "imgs/table.png" (make-posn 0 0)))
@@ -160,13 +180,8 @@
 ;******************************************************************************************************************************************
 ;*****Functions******
 
-;Music
-(define (music)
-  (play-sound "sound/music.wav" #t))
 
-;Update Pixmap
-(define (update pixmap)
-  (copy-viewport pixmap window))
+
 
 ;Mouse Menu Events
 (define (mouseMenu-event click)
@@ -186,11 +201,6 @@
           (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
     (else (mousePlayers-event(get-mouse-click window) ))))
 
-;Start
-(define (initGame)
-  (update table)
-  (music))
-  ;(mouseMenu-event(get-mouse-click window)))
 
 
 
