@@ -110,7 +110,7 @@
           (startDist (cdr Plist) (cddr cList) (+ x 200)))
         ((equal? (howMany Plist) 2)
          ((draw-pixmap table) (cardName cList) (make-posn x 300))
-          ((draw-pixmap table) (cardName (cdr cardList)) (make-posn (+ x 20) 300))
+          ((draw-pixmap table) (cardName (cdr cList)) (make-posn (+ x 20) 300))
           (startDist (cdr Plist) (cddr cList) (+ x 200)))
         ((equal? (howMany Plist) 1)
          ((draw-pixmap table) (cardName cList) (make-posn x 300))
