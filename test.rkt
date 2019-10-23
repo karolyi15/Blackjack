@@ -4,10 +4,6 @@
 (require games/cards)
 (require 2htdp/image)
 
-;(provide initGame)
-(require "Backend.rkt")
-
-
 (open-graphics)
 
 
@@ -32,8 +28,6 @@
 
 ;Draw Main Menu(Pixmap)
 (define menu(open-pixmap "menu" windowW windowH))
-;Draw About(Pixmap)
-(define about(open-pixmap "about" windowW windowH))
 ;Draw Select Players(Pixmap)
 (define players(open-pixmap "players" windowW windowH))
 ;Draw Table(Pixmap)
@@ -45,9 +39,9 @@
 ;******Images********
 
 ;Background
-(define menuBackground-image((draw-pixmap menu) "imgs/tablel.png" (make-posn 0 0)))
+(define menuBackground-image((draw-pixmap menu) "imgs/table.png" (make-posn 0 0)))
 ;Logo Image
-;(define logo-image((draw-pixmap menu) "imgs/logo.jpeg" (make-posn (/ (- windowW 201) 2) 70)))
+(define logo-image((draw-pixmap menu) "imgs/logo.jpg" (make-posn (/ (- windowW 201) 2) 70)))
 
 ;******Buttons*******
 
@@ -55,16 +49,11 @@
 (define startButton((draw-solid-rectangle menu)(make-posn (/ (- windowW (* buttonW 2)) 2) 290) (* buttonW 2) buttonH "gray"))
 ;Start Button Text
 (define startButtonText((draw-string menu)(make-posn (/ (- windowW 30) 2) 310) "Start" "black"))
-
 ;About Button
 (define aboutButton((draw-solid-rectangle menu)(make-posn (/ (- windowW (* buttonW 1.5)) 2) (+ buttonH 310)) (* buttonW 1.5) buttonH "gray"))
 ;About Button Text
 (define aboutButtonText((draw-string menu)(make-posn (/ (- windowW 40) 2) 365) "About" "black"))
 
-;*******Text*********
-
-;Version
-(define versionLabel((draw-string menu)(make-posn margin (- windowH margin)) "Version 1.0" "yellow"))
   
 ;********************************************************INIT PLAYERS SELECT****************************************************************
 ;******Images********
@@ -88,12 +77,77 @@
 ;Player 3 Button Text
 (define player3ButtonText((draw-string  players)(make-posn (/ (- windowW (* buttonW 2) -175) 2) (/ (- windowH buttonH -185) 2)) "3 Players" "black"))
 
+;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+;Music
+(define (music)
+  (play-sound "sound/music.wav" #t))
+
+;Update Pixmap
+(define (update pixmap)
+  (copy-viewport pixmap window))
+
+;Start
+(define (initGame)
+  (update table)
+  (music))
+  ;(mouseMenu-event(get-mouse-click window)))
+
 ;**********************************************************INIT TABLE**********************************************************************
 ;******Images********
 
+;;funcion que cuenta la cantidad de jugadores participando y devuelve este numero
+;;list >>> lista de elementos
+(define (howMany list)
+  (cond ((null? list)
+         0)
+        (else
+         (+ 1 (howMany (cdr list))))))
+;funcion que usa el primer elemento de la lista, lo convierte en string y lo concatena para obtener la ruta de cada imagen
+(define (cardName cList)
+  (define str (list (car  cList)))
+  (define name (string-join str ""))
+  (string-append (string-append "imgs/" name) ".png"))
+
+(define (deckAvailable cardList x y)
+  (cond ((equal? (howMany cardList) 1)
+         ((draw-pixmap table) (cardName cardList) (make-posn x y)))
+        ((> (howMany cardList) 1)
+         ((draw-pixmap table) (cardName cardList) (make-posn x y))
+         (deckAvailable (cdr cardList) (+ 13 x) (+ 0 y)))))
+
+(define cardList (list "2C" "2D" "2H" "2S" "3C" "3D" "3H" "3S" "4C" "4D" "4H" "4S" "5C" "5D" "5H" "5S" "6C" "6D" "6H" "6S" "7C" "7D" "7H" "7S" "8C" "8D" "8H" "8S" "9C" "9D" "9H" "9S" "10C" "10D" "10H" "10S" "AC" "AD" "AH" "AS" "JC" "JD" "JH" "JS" "QC" "QD" "QH" "QS"))
+
+(define (putCard cList x y)
+  ((draw-pixmap table) (cardName cList) (make-posn x y)))
+
+  
+;funcion que inicia repartiendo 2 cartas a cada jugador
+(define (startDist Plist cList x)
+  (cond ((equal? (howMany Plist) 3)
+         (putCard cList x 300)
+         (putCard (cdr cList) (+ x 20) 300)
+         (startDist (cdr Plist) (cddr cList) (+ x 200))
+         (update table)
+         (deckAvailable (cddr cList) 10 10))
+        ((equal? (howMany Plist) 2)
+         (putCard cList x 300)
+         (putCard (cdr cList) (+ x 20) 300)
+         (startDist (cdr Plist) (cddr cList) (+ x 200))
+         (update table)
+         (deckAvailable (cddr cList) 10 10))
+        ((equal? (howMany Plist) 1)
+         (putCard cList x 300)
+         (putCard (cdr cList) (+ x 20) 300)
+         (update table)
+         (deckAvailable (cddr cList) 10 130))))
+
 ;Table Image
 (define table-image((draw-pixmap table) "imgs/table.png" (make-posn 0 0)))
-(define card-image((draw-pixmap table) "imgs/AD.png" (make-posn 10 10)))
+(deckAvailable cardList 10 10)
+;(update table) 
+(startDist '("uno" "dos" "tres") cardList 100) ;esto muestra las primeras cartas de los jugadores
+
 
 ;****Status Bar******
 
@@ -129,143 +183,26 @@
 ;Player3
 (define player3Title((draw-string score)(make-posn 10 40) "Player 3:" "yellow"))
 
-;******Buttons*******
-;********************************************************INIT ABOUT FRAME******************************************************************
-
-
-;******Images********
-
-;Information
-(define aboutBackground-image((draw-pixmap about) "imgs/about.png" (make-posn 0 0)))
-
-;*******Text*********
-
-;Info Bar
-(define aboutBar((draw-solid-rectangle about)(make-posn 0 (- windowH (* buttonH 3.2))) windowW (* buttonH 5) "black"))
-;Info Message
-(define aboutMessage((draw-string about)(make-posn (* margin 2) (- windowH (* margin 4))) "Version 1.0" "yellow"))
-
-;******Buttons*******
-
-;Back Button
-(define backButton((draw-solid-rectangle about)(make-posn (- windowW margin buttonW) (- windowH buttonH margin)) buttonW buttonH "gray"))
-;Stand Button Text
-(define backButtonText((draw-string about)(make-posn (- windowW margin buttonW) (- windowH (* margin 2))) "Back" "black"))
-
-
-
 ;******************************************************************************************************************************************
 ;*****Functions******
 
-;Music
-(define (music)
-  (play-sound "sound/music.wav" #t))
-
-;Selection Sound
-(define (sound name)
-  (cond ((equal? name "click")(play-sound "sound/selection.wav" #t))
-        ((equal? name "shuffle")(play-sound "sound/shuffle.wav" #t))
-        ((equal? name "flip")(play-sound "sound/flipcard.wav" #t))
-        ))
 
 
-;Update Pixmap
-(define (update pixmap)
-  (clear-viewport window)
-  (copy-viewport pixmap window)
-  (viewport-flush-input window)
-  (cond
-    ((equal? pixmap menu)(mouseMenu-event(get-mouse-click window)))
-    ((equal? pixmap players)(mousePlayers-event(get-mouse-click window)))
-    ((equal? pixmap table)(mouseTable-event(get-mouse-click window)))
-    ((equal? pixmap about)(mouseAbout-event(get-mouse-click window)))
-   )
-  )
-
-
-;
-(define (cardName cList)
-  (define str (list (car  cList)))
-  (define name (string-join str ""))
-  (string-append (string-append "imgs/" name) ".png"))
-
-;Set Card in Table
-(define (setCard cardList x y)
-  ((draw-pixmap table) (cardName cardList) (make-posn x y))
-  (update table))
-
-
-;*****Handlers******
 
 ;Mouse Menu Events
 (define (mouseMenu-event click)
-  (sound "click")
   (cond
     ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
           (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
-    ((and (<= 260 (posn-x (mouse-click-posn click)) 440)
-          (<= 345 (posn-y (mouse-click-posn click)) 380)) (update about))
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
     (else (mouseMenu-event(get-mouse-click window) ))))
-
-;Mouse About Events
-(define (mouseAbout-event click)
-  (sound "click")
-  (cond
-    ((and (<= 570 (posn-x (mouse-click-posn click)) 690)
-          (<= 455 (posn-y (mouse-click-posn click)) 490)) (update menu))
-    (else (mouseAbout-event(get-mouse-click window) ))))
-
 
 ;Mouse Player Events
 (define (mousePlayers-event click)
-  (sound "click")
   (cond
     ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
-          (<= 157.5 (posn-y (mouse-click-posn click)) 192.5)) (selectPlayers 1))
+          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
     ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
-          (<= 232.5 (posn-y (mouse-click-posn click)) 267.5)) (selectPlayers 2))
-    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
-          (<= 307.5 (posn-y (mouse-click-posn click)) 342.5)) (selectPlayers 3))
+          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players))
     (else (mousePlayers-event(get-mouse-click window) ))))
-
-;Mouse Table Events
-(define (mouseTable-event click)
-  (sound "click")
-  (cond
-    ((and (<= 570 (posn-x (mouse-click-posn click)) 690)
-          (<= 455 (posn-y (mouse-click-posn click)) 490)) (update players))
-    ((and (<= 440 (posn-x (mouse-click-posn click)) 560)
-          (<= 455 (posn-y (mouse-click-posn click)) 490)) (update players))
-    (else (mouseTable-event(get-mouse-click window) ))))
-
-;*******Game**********
-
-(define (game)
-  (shuffle deck)
-  (sound "shuffle")
-  ;(Dist)
-  ;(turns)
-  ;(winner)
-  ;(game)
-
-  )
-
-;Backend Connection (BCEJ Function)
-(define (selectPlayers num)
-  (cond((equal? num 1)(bCEj '("Player1")))
-       ((equal? num 2)(bCEj '("Player1" "Player2")))
-       ((equal? num 3)(bCEj '("Player1" "Player2" "Player3")))
-    )
-  (update table)
-  (game)
-  )
-
-;*******Start*********
-(define (initGame)
-  (update menu)
-  ;(sound)
-  ;(music)
-  )
-
-
-(initGame)
