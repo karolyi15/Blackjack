@@ -159,10 +159,6 @@
 (define (music)
   (play-sound "sound/music.wav" #t))
 
-;Selection Sound
-(define (sound)
-  (play-sound "sound/selection.wav" #t))
-
 ;Update Pixmap
 (define (update pixmap)
   (clear-viewport window)
@@ -174,8 +170,6 @@
     ((equal? pixmap about)(mouseAbout-event(get-mouse-click window)))
    )
   )
-
-;*****Handlers******
 
 ;Mouse Menu Events
 (define (mouseMenu-event click)
@@ -214,10 +208,9 @@
           (<= 455 (posn-y (mouse-click-posn click)) 490)) (update players))
     (else (mouseTable-event(get-mouse-click window) ))))
 
-;*******Start*********
+;Start
 (define (initGame)
   (update menu)
-  ;(sound)
   ;(music)
   )
 
