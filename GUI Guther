@@ -103,24 +103,24 @@
 (define cardList (list "2C" "2D" "2H" "2S" "3C" "3D" "3H" "3S" "4C" "4D" "4H" "4S" "5C" "5D" "5H" "5S" "6C" "6D" "6H" "6S" "7C" "7D" "7H" "7S" "8C" "8D" "8H" "8S" "9C" "9D" "9H" "9S" "10C" "10D" "10H" "10S" "AC" "AD" "AH" "AS" "JC" "JD" "JH" "JS" "QC" "QD" "QH" "QS"))
 
 ;funcion que inicia repartiendo 2 cartas a cada jugador
-(define (startDist Plist Clist x)
+(define (startDist Plist cList x)
   (cond ((equal? (howMany Plist) 3)
-         ((draw-pixmap table) (cardName cardList) (make-posn x 300))
-          ((draw-pixmap table) (cardName cardList) (make-posn (+ x 20) 300))
-          (startDist (cdr Plist) (cdr Clist) (+ x 200)))
+         ((draw-pixmap table) (cardName cList) (make-posn x 300))
+          ((draw-pixmap table) (cardName (cdr cardList)) (make-posn (+ x 20) 300))
+          (startDist (cdr Plist) (cddr cList) (+ x 200)))
         ((equal? (howMany Plist) 2)
-         ((draw-pixmap table) (cardName cardList) (make-posn x 300))
-          ((draw-pixmap table) (cardName cardList) (make-posn (+ x 20) 300))
-          (startDist (cdr Plist) (cdr Clist) (+ x 200)))
+         ((draw-pixmap table) (cardName cList) (make-posn x 300))
+          ((draw-pixmap table) (cardName (cdr cardList)) (make-posn (+ x 20) 300))
+          (startDist (cdr Plist) (cddr cList) (+ x 200)))
         ((equal? (howMany Plist) 1)
-         ((draw-pixmap table) (cardName cardList) (make-posn x 300))
-         ((draw-pixmap table) (cardName cardList) (make-posn (+ x 20) 300)))))
+         ((draw-pixmap table) (cardName cList) (make-posn x 300))
+         ((draw-pixmap table) (cardName (cdr cList)) (make-posn (+ x 20) 300)))))
 
 ;Table Image
 (define table-image((draw-pixmap table) "imgs/table.png" (make-posn 0 0)))
 (deckAvailable cardList 10 10)
-;(update table)
-(startDist '("uno") cardList 100)
+;(update table) 
+(startDist '("uno" "dos" "tres") cardList 100)
 
 
 ;****Status Bar******
