@@ -43,9 +43,9 @@
 ;******Images********
 
 ;Background
-(define menuBackground-image((draw-pixmap menu) "imgs/table.png" (make-posn 0 0)))
+(define menuBackground-image((draw-pixmap menu) "imgs/tablel.png" (make-posn 0 0)))
 ;Logo Image
-(define logo-image((draw-pixmap menu) "imgs/logon.jpg" (make-posn (/ (- windowW 201) 2) 70)))
+;(define logo-image((draw-pixmap menu) "imgs/logo.jpeg" (make-posn (/ (- windowW 201) 2) 70)))
 
 ;******Buttons*******
 
@@ -223,4 +223,4 @@
 
 
 
-(initGame)
+;(initGame)
