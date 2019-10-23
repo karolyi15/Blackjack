@@ -1,6 +1,6 @@
 #lang racket
 
-(include "Frontend.rkt")
+(provide bCEj)
 
 ;;funcion que recibe dos listas y devuelve otra lista con pares (atributo, valor)
 (define  (wrapper lista1 lista2)
@@ -34,4 +34,4 @@
         ((null? X)
          (print " no hay jugadores "))))
 
-(initGame)
+

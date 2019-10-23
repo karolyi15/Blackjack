@@ -4,7 +4,9 @@
 (require games/cards)
 (require 2htdp/image)
 
-(provide initGame)
+;(provide initGame)
+(require "Backend.rkt")
+
 
 (open-graphics)
 
@@ -222,5 +224,4 @@
   )
 
 
-
-;(initGame)
+(initGame)
