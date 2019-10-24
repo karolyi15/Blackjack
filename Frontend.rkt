@@ -253,42 +253,50 @@
   (update table #f)
   )
 
-;Distribute cards
-(define (distribute Plist cList x)
-  (cond ((equal? (howMany Plist) 3)
-         (setCard cList x 300)
-         (setCard (cdr cList) (+ x 20) 300)
-         (distribute (cdr Plist) (cddr cList) (+ x 200))
-         (update table #f)
-         (deckAvailable (cddr cList) 10 10)
-         )
-        ((equal? (howMany Plist) 2)
-         (setCard cList x 300)
-         (setCard (cdr cList) (+ x 20) 300)
-         (distribute (cdr Plist) (cddr cList) (+ x 200))
-         (update table #f)
-         (deckAvailable (cddr cList) 10 10)
-         )
-        ((equal? (howMany Plist) 1)
-         (setCard cList x 300)
-         (setCard (cdr cList) (+ x 20) 300)
-         (update table #f)
-         ;(deckAvailable (cddr cList) 10 130)
-         )))
-
 ;********new card*****
 (define (newCard x )
   (setCard deck x 300)
   (deckAvailable (cdr deck) 10 10)
   (update table #t)
    )
+
 ;************************************************************************************************************************************
-(define(turns deck playerNum x)
-  (cond ((>= playerNum 1)(cond((equal?(mouseTable-event(get-mouse-click window)) #t)(newCard x)(deckAvailable (cdr deck) 10 10) (turns (cdr deck) playerNum (+ x 10)))
-       (else (print (string-append "turn player:" (number->string x)))(turns deck (- playerNum 1) (+ x 100)))))
-        (else(print "hay ganador")))
+;Game Loop
+(define (game deck playerNum playerNum2 x bool)
+  ;Distribute Cards
+  (cond((equal? bool #f)
+        (cond ((equal? playerNum 3)
+         (setCard deck x 300)
+         (setCard (cdr deck) (+ x 20) 300)
+         (deckAvailable (cddr deck)10 10)
+         (game (cddr deck)(- playerNum 1) playerNum2 (+ x 200) #f)
+         )
+              
+        ((equal? playerNum 2)
+         (setCard deck x 300)
+         (setCard (cdr deck) (+ x 20) 300)
+         (deckAvailable (cddr deck)10 10)
+         (game (cddr deck)(- playerNum 1) playerNum2 (+ x 200) #f)
+         )
+        
+        ((equal? playerNum 1)
+         (setCard deck x 300)
+         (setCard (cdr deck) (+ x 20) 300)
+         (deckAvailable (cddr deck)10 10)
+         (game (cddr deck)(- playerNum 1 )playerNum2 (+ x 200) #t)
+         )))
+  ;Players turns
+       (else  (cond ((>= playerNum2 1)
+                     (cond((equal?(mouseTable-event(get-mouse-click window)) #t)
+                           (newCard x)(deckAvailable (cdr deck) 10 10) (game (cdr deck) playerNum playerNum2 (+ x 10) #t)
+                           )
+                          (else (print (string-append "turn player:" (number->string playerNum2)))(game deck  playerNum(- playerNum2 1) (+ x 200) #t))))
+              (else(print "hay ganador")))
+              )
+       )
   
   )
+
 
 (define (bCEj X)
   (update table #f)
@@ -297,9 +305,7 @@
   (define player2 (cadr X))
   (define player3 (caddr X))
   (define deck (list "KC" "KD" "KH" "KS" "2C" "2D" "2H" "2S" "3C" "3D" "3H" "3S" "4C" "4D" "4H" "4S" "5C" "5D" "5H" "5S" "6C" "6D" "6H" "6S" "7C" "7D" "7H" "7S" "8C" "8D" "8H" "8S" "9C" "9D" "9H" "9S" "10C" "10D" "10H" "10S" "AC" "AD" "AH" "AS" "JC" "JD" "JH" "JS" "QC" "QD" "QH" "QS"))
-  (distribute X deck 300)
-  (turns deck playerNum 300)
-  
+  (game deck playerNum playerNum 100 #f)
   
   )
 
