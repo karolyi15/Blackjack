@@ -249,7 +249,9 @@
          ((draw-pixmap table) (cardImage cardList) (make-posn x y)))
         ((> (howMany cardList) 1)
          ((draw-pixmap table) (cardImage cardList) (make-posn x y))
-         (deckAvailable (cdr cardList) (+ 10 x) (+ 0 y)))))
+         (deckAvailable (cdr cardList) (+ 10 x) (+ 0 y))))
+  (update table #f)
+  )
 
 ;Distribute cards
 (define (distribute Plist cList x)
@@ -282,7 +284,7 @@
    )
 ;************************************************************************************************************************************
 (define(turns deck playerNum x)
-  (cond ((>= playerNum 1)(cond((equal?(mouseTable-event(get-mouse-click window)) #t)(newCard x) (turns (cdr deck) playerNum (+ x 10)))
+  (cond ((>= playerNum 1)(cond((equal?(mouseTable-event(get-mouse-click window)) #t)(newCard x)(deckAvailable (cdr deck) 10 10) (turns (cdr deck) playerNum (+ x 10)))
        (else (print (string-append "turn player:" (number->string x)))(turns deck (- playerNum 1) (+ x 100)))))
         (else(print "hay ganador")))
   
