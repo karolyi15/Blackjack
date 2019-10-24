@@ -3,7 +3,8 @@
 
 (provide howMany
          wrapper
-         handValue)
+         handValue
+         barajar)
 
 
 
@@ -63,3 +64,27 @@
     )
   )
 
+;Shuffle Algorith
+(define (invert L1 L2)
+  (if (null? L1)
+   L2
+   (invert (cdr L1) (cons (car L1) L2))))
+
+(define (concatena L1 L2)
+  (if (null? L1)
+      L2
+      (cons (car L1) (concatena (cdr L1) L2))))
+
+
+(define (shuffle deck)
+  (cond ((null? deck)
+         '())
+        (else
+         (cons (car (invert deck '())) (shuffle (cdr (invert deck '())))))))
+
+
+
+
+(define (barajar deck num)
+  (cond((zero? num)deck)
+  (else(barajar(shuffle (invert (shuffle (invert deck '())) '())) (- num 1)))))
