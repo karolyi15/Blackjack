@@ -24,6 +24,9 @@
 (define cardW 65)
 (define cardH 100)
 ;Player 1 Zone
+;Player 2 Zone
+;Player 3 Zone
+;Deck Zone
 
 
 
@@ -197,7 +200,7 @@
     ((and (<= 570 (posn-x (mouse-click-posn click)) 690)
           (<= 455 (posn-y (mouse-click-posn click)) 490)) (update players #t))
     ((and (<= 440 (posn-x (mouse-click-posn click)) 560)
-          (<= 455 (posn-y (mouse-click-posn click)) 490)) (update players #t))
+          (<= 455 (posn-y (mouse-click-posn click)) 490)) (newCard 300))
     (else (mouseTable-event(get-mouse-click window) ))))
 ;************************************************************************************************************************************
 ;*****Functions******
@@ -238,6 +241,14 @@
   ((draw-pixmap table) (cardImage cardList) (make-posn x y))
   (update table #f))
 
+;Set Deck in Table
+(define (deckAvailable cardList x y)
+  (cond ((equal? (howMany cardList) 1)
+         ((draw-pixmap table) (cardImage cardList) (make-posn x y)))
+        ((> (howMany cardList) 1)
+         ((draw-pixmap table) (cardImage cardList) (make-posn x y))
+         (deckAvailable (cdr cardList) (+ 10 x) (+ 0 y)))))
+
 ;Distribute cards
 (define (distribute Plist cList x)
   (cond ((equal? (howMany Plist) 3)
@@ -245,14 +256,14 @@
          (setCard (cdr cList) (+ x 20) 300)
          (distribute (cdr Plist) (cddr cList) (+ x 200))
          (update table #f)
-         ;(deckAvailable (cddr cList) 10 10)
+         (deckAvailable (cddr cList) 10 10)
          )
         ((equal? (howMany Plist) 2)
          (setCard cList x 300)
          (setCard (cdr cList) (+ x 20) 300)
          (distribute (cdr Plist) (cddr cList) (+ x 200))
          (update table #f)
-         ;(deckAvailable (cddr cList) 10 10)
+         (deckAvailable (cddr cList) 10 10)
          )
         ((equal? (howMany Plist) 1)
          (setCard cList x 300)
@@ -262,7 +273,11 @@
          )))
 
 ;********new card*****
-
+(define (newCard x )
+  (setCard deck x 300)
+  (deckAvailable (cdr deck) 10 10)
+  (update table #t)
+   )
 
 ;********turn*********
 
@@ -294,7 +309,7 @@
   (update table #f)
   (game)
   )
-
+;************************************************************************************************************************************
 ;*******Start*********
 (define (initGame)
   (update menu #t)
