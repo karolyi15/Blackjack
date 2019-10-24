@@ -321,7 +321,7 @@
                            (newCard deck (+ x x2) p1Y) (game (cdr deck) playerNum playerNum2 x (+ x2 15) #t)
                            )
                           (else (print (string-append "turn player:" (number->string playerNum2)))(game deck  playerNum (- playerNum2 1) (+ x 200) 30 #t))))
-              (else(print "hay ganador")))
+              (else(print "hay ganador")(update menu #t)))
               )
        )
   
