@@ -35,7 +35,7 @@
 (define deckY 10)
 ;Dealer Zone
 (define dealerX 300)
-(define dealerY 200)
+(define dealerY 100)
 
 
 
@@ -292,10 +292,14 @@
          )
         
         ((equal? playerNum 1)
+         ;Player Hand
          (setCard deck p3X p1Y)
          (setCard (cdr deck) (+ p3X 15) p1Y)
          ;(deckAvailable (cddr deck)10 100)
-         (game (cddr deck)(- playerNum 1 ) playerNum2 x x2 #t)
+         ;Dealer Hand
+         (setCard (cddr deck) dealerX dealerY)
+         (setCard (cdddr deck) (+ dealerX 15) dealerY)
+         (game (cddddr deck)(- playerNum 1 ) playerNum2 x x2 #t)
          )))
   ;Players turns
        (else  (cond ((>= playerNum2 1)
