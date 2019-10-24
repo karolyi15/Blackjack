@@ -24,11 +24,19 @@
 (define cardW 65)
 (define cardH 100)
 ;Player 1 Zone
+(define p1X 100)
+(define p1Y 300)
 ;Player 2 Zone
+(define p2X 300)
 ;Player 3 Zone
+(define p3X 500)
 ;Deck Zone
 (define deckX 10)
 (define deckY 10)
+;Dealer Zone
+(define dealerX 300)
+(define dealerY 200)
+
 
 
 
@@ -233,64 +241,68 @@
 ;************************************************************************************************************************************
 
 ;Append Card Image
-(define (cardImage cList)
+(define (cardImage cList flip)
+  (cond ((equal? flip #t)
   (define str (list (car  cList)))
   (define name (string-join str ""))
   (string-append (string-append "imgs/" name) ".png"))
-
+        (else (string-append "imgs/red_back" ".png"))
+)
+  
+  )
 ;Set Card in Table
 (define (setCard cardList x y)
-  ((draw-pixmap table) (cardImage cardList) (make-posn x y))
+  ((draw-pixmap table) (cardImage cardList #t) (make-posn x y))
   (update table #f))
 
 ;Set Deck in Table
 (define (deckAvailable cardList x y)
   (cond ((equal? (howMany cardList) 1)
-         ((draw-pixmap table) (cardImage cardList) (make-posn x y)))
+         ((draw-pixmap table) (cardImage cardList #f) (make-posn x y)))
         ((> (howMany cardList) 1)
-         ((draw-pixmap table) (cardImage cardList) (make-posn x y))
-         (deckAvailable (cdr cardList) (+ 10 x) (+ 0 y))))
+         ((draw-pixmap table) (cardImage cardList #f) (make-posn x y))
+         (deckAvailable (cdr cardList) (+ 0.2 x) y)))
   (update table #f)
   )
 
 ;********new card*****
-(define (newCard x )
-  (setCard deck x 300)
-  (deckAvailable (cdr deck) 10 10)
+(define (newCard  deck x y)
+  (setCard deck x y)
+  ;(deckAvailable (cdr deck) 10 10)
   (update table #t)
    )
 
 ;************************************************************************************************************************************
 ;Game Loop
-(define (game deck playerNum playerNum2 x bool)
+(define (game deck playerNum playerNum2 x x2 bool)
   ;Distribute Cards
   (cond((equal? bool #f)
         (cond ((equal? playerNum 3)
-         (setCard deck x 300)
-         (setCard (cdr deck) (+ x 20) 300)
-         (deckAvailable (cddr deck)10 10)
-         (game (cddr deck)(- playerNum 1) playerNum2 (+ x 200) #f)
+         (setCard deck p1X p1Y)
+         (setCard (cdr deck) (+ p1X 15) p1Y)
+         ;(deckAvailable (cddr deck)10 10)
+         (game (cddr deck)(- playerNum 1) playerNum2 x x2 #f)
          )
               
         ((equal? playerNum 2)
-         (setCard deck x 300)
-         (setCard (cdr deck) (+ x 20) 300)
-         (deckAvailable (cddr deck)10 10)
-         (game (cddr deck)(- playerNum 1) playerNum2 (+ x 200) #f)
+         (setCard deck p2X p1Y)
+         (setCard (cdr deck) (+ p2X 15) p1Y)
+         ;(deckAvailable (cddr deck)10 50)
+         (game (cddr deck)(- playerNum 1) playerNum2 x x2 #f)
          )
         
         ((equal? playerNum 1)
-         (setCard deck x 300)
-         (setCard (cdr deck) (+ x 20) 300)
-         (deckAvailable (cddr deck)10 10)
-         (game (cddr deck)(- playerNum 1 )playerNum2 (+ x 200) #t)
+         (setCard deck p3X p1Y)
+         (setCard (cdr deck) (+ p3X 15) p1Y)
+         ;(deckAvailable (cddr deck)10 100)
+         (game (cddr deck)(- playerNum 1 ) playerNum2 x x2 #t)
          )))
   ;Players turns
        (else  (cond ((>= playerNum2 1)
                      (cond((equal?(mouseTable-event(get-mouse-click window)) #t)
-                           (newCard x)(deckAvailable (cdr deck) 10 10) (game (cdr deck) playerNum playerNum2 (+ x 10) #t)
+                           (newCard deck (+ x x2) p1Y) (game (cdr deck) playerNum playerNum2 x (+ x2 15) #t)
                            )
-                          (else (print (string-append "turn player:" (number->string playerNum2)))(game deck  playerNum(- playerNum2 1) (+ x 200) #t))))
+                          (else (print (string-append "turn player:" (number->string playerNum2)))(game deck  playerNum (- playerNum2 1) (+ x 200) 30 #t))))
               (else(print "hay ganador")))
               )
        )
@@ -305,7 +317,8 @@
   (define player2 (cadr X))
   (define player3 (caddr X))
   (define deck (list "KC" "KD" "KH" "KS" "2C" "2D" "2H" "2S" "3C" "3D" "3H" "3S" "4C" "4D" "4H" "4S" "5C" "5D" "5H" "5S" "6C" "6D" "6H" "6S" "7C" "7D" "7H" "7S" "8C" "8D" "8H" "8S" "9C" "9D" "9H" "9S" "10C" "10D" "10H" "10S" "AC" "AD" "AH" "AS" "JC" "JD" "JH" "JS" "QC" "QD" "QH" "QS"))
-  (game deck playerNum playerNum 100 #f)
+  (deckAvailable deck deckX deckY)
+  (game deck playerNum playerNum p1X 30 #f)
   
   )
 
