@@ -282,14 +282,29 @@
 ;Busted?
 (define (busted? num playerList)
   (cond((equal? num 3)
-        (cond((>(handValue (cadr playerList)) 21 )#t)))
-       ((equal? num 2)(cond((>(handValue (cdadr playerList)) 21 )#t)))
-       ((equal? num 1)(cond((>(handValue (cddadr playerList)) 21 )#t)))
-       ((equal? num 4)(cond((>(handValue (cdr (cddadr playerList)) 21 )#t)))
+        (cond((>(handValue (car playerList)) 21 )#t)))
+       ((equal? num 2)(cond((>(handValue (cadr playerList)) 21 )#t)))
+       ((equal? num 1)(cond((>(handValue (caddr playerList)) 21 )#t)))
+       ((equal? num 4)(cond((>(handValue (cadddr playerList) 21 )#t)))
        )
   ))
 
+;Winner?
 
+
+
+
+;Add To Hand
+(define (addToHand playerList player card)
+  
+  (cond((equal? player 3)(append(car playerList)(list card) ))
+  ((equal? player 2)(append(cadr playerList)(list card) ))
+  ((equal? player 1)(append(caddr playerList)(list card) ))
+  ((equal? player 4)(append(cadddr playerList)(list card) ))
+)
+  )
+
+  
 
 
 ;Game Loop
@@ -322,13 +337,17 @@
          )))
   ;Players turns
        (else  (cond ((>= playerNum2 1)
-                     (cond((equal?(mouseTable-event(get-mouse-click window)) #t)
+                     (cond((equal?(update table #t) #t)
                            (newCard deck (+ x x2) p1Y)
-                           
-                           (cond((equal? (busted? playerList playerNum2) #f))
+                           (print(addToHand playerList playerNum2 (car deck)))
                            (game playerList (cdr deck) playerNum playerNum2 x (+ x2 15) #t)
-                           (else(game playerList deck  playerNum (- playerNum2 1) (+ x 200) 30 #t))
-                           )
+                           
+                           ;(print playerList)
+                           
+                           ;(cond((equal? (busted? playerList playerNum2) #f))
+                           ;(game playerList (cdr deck) playerNum playerNum2 x (+ x2 15) #t)
+                           ;(else (print "busted")(game playerList deck  playerNum (- playerNum2 1) (+ x 200) 30 #t) )
+                           ;)
 
 
                            
@@ -342,22 +361,23 @@
 
 ;Main Function Runs The Game
 (define (bCEj X)
+  (print X)
   (drawTable)
   (update table #f)
   (define playerNum (- (howMany X) 1))
-  (define playerList(wrapper X '('() '() '() '())))
-  (print playerList)
-  (define deck (list   "KS" "4H" "2C" "10D" "JH" "7H" "KC"  "3C" "QD" "AS" "7S" "4S" "5D" "5H" "6C" "2D" "6D" "2H" "6S" "7C" "KD" "4C" "7D" "5S" "JC" "9C" "AH" "9D" "3D" "9S" "10C" "4D" "8C" "KH" "QC" "9H" "QH" "2S" "8D" "3S" "8H" "8S" "6H" "10H" "10S" "3H" "AC" "QS""AD" "JD" "JS" "5C"))
+  ;(define playerList(wrapper X '('() '() '() '())))
+  ;(print playerList)
+  (define deck (list   "KS" "4H" "2C" "3C" "10D" "JH" "7H" "KC" "QD" "AS" "7S" "4S" "5D" "5H" "6C" "2D" "6D" "2H" "6S" "7C" "KD" "4C" "7D" "5S" "JC" "9C" "AH" "9D" "3D" "9S" "10C" "4D" "8C" "KH" "QC" "9H" "QH" "2S" "8D" "3S" "8H" "8S" "6H" "10H" "10S" "3H" "AC" "QS""AD" "JD" "JS" "5C"))
   (deckAvailable deck deckX deckY)
-  (game playerList deck playerNum playerNum p1X 30 #f)
+  (game X deck playerNum playerNum p1X 30 #f)
   
   )
 
 ;Backend Connection (BCEJ Function)
 (define (selectPlayers num)
-  (cond((equal? num 1)(bCEj '("Player1" "a" "a" "dealer")))
-       ((equal? num 2)(bCEj '("Player1" "Player2" "a" "dealer")))
-       ((equal? num 3)(bCEj '("Player1" "Player2" "Player3" "dealer")))
+  (cond((equal? num 1)(bCEj (list '() '() '() '())))
+       ((equal? num 2)(bCEj (list '() '() '() '())))
+       ((equal? num 3)(bCEj (list '() '() '() '())))
     )
   )
 ;************************************************************************************************************************************
