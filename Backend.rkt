@@ -2,7 +2,8 @@
 
 (provide bCEj)
 (provide deck
-         shuffle)
+         shuffle
+         howMany)
 
 
 ;*******Fields*******
@@ -22,11 +23,11 @@
 
 ;;funcion que cuenta la cantidad de jugadores participando y devuelve este numero
 ;;playerList >>> lista de jugadores
-(define (playersNum playerList)
+(define (howMany playerList)
   (cond ((null? playerList)
          0)
         (else
-         (+ 1 (playersNum (cdr playerList))))))
+         (+ 1 (howMany (cdr playerList))))))
 
 
 
@@ -35,16 +36,23 @@
 ;;X >>> platerList
 
 (define (bCEj X)
-  (cond ((equal? 3 (playersNum X))
+  (cond ((equal? 3 (howMany X))
          (print (wrapper X '(0 0 0))))
-        ((equal? 2 (playersNum X))
+        ((equal? 2 (howMany X))
          (print (wrapper X '(0 0))))
-        ((equal? 1 (playersNum X))
+        ((equal? 1 (howMany X))
          (print (wrapper X '(0))))
         ((null? X)
-         (print " no hay jugadores "))))
+         (print " no hay jugadores ")))
+  ;(shuffle deck)
+  )
+
+;select random element
+
+
 
 ;Shuffle Deck
 (define (shuffle deck)
-  (print "hola")
   (print deck))
+
+;(shuffle deck)
