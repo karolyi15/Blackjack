@@ -3,7 +3,8 @@
 (provide bCEj)
 (provide deck
          shuffle
-         howMany)
+         howMany
+         wrapper)
 
 
 ;*******Fields*******
