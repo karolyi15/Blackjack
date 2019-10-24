@@ -1,15 +1,10 @@
 #lang racket
 
-(provide bCEj)
-(provide deck
-         shuffle
-         howMany
-         wrapper)
 
+(provide howMany
+         wrapper
+         handValue)
 
-;*******Fields*******
-
-(define deck (list "KC" "KD" "KH" "KS" "2C" "2D" "2H" "2S" "3C" "3D" "3H" "3S" "4C" "4D" "4H" "4S" "5C" "5D" "5H" "5S" "6C" "6D" "6H" "6S" "7C" "7D" "7H" "7S" "8C" "8D" "8H" "8S" "9C" "9D" "9H" "9S" "10C" "10D" "10H" "10S" "AC" "AD" "AH" "AS" "JC" "JD" "JH" "JS" "QC" "QD" "QH" "QS"))
 
 
 ;*****Functions******
@@ -30,30 +25,41 @@
         (else
          (+ 1 (howMany (cdr playerList))))))
 
+;Return the value of a card
+(define (valueCard cList)
+  (define str (list (car  cList)))
+  (define name (string-join str ""))
+  (cond ((equal? "2" (substring name 0 1))
+         2)
+        ((equal? "3" (substring name 0 1))
+         3)
+        ((equal? "4" (substring name 0 1))
+         4)
+        ((equal? "5" (substring name 0 1))
+         5)
+        ((equal? "6" (substring name 0 1))
+         6)
+        ((equal? "7" (substring name 0 1))
+         7)
+        ((equal? "8" (substring name 0 1))
+         8)
+        ((equal? "9" (substring name 0 1))
+         9)
+        ((equal? "10" (substring name 0 1))
+         10)
+        ((equal? "A" (substring name 0 1))
+         11)
+        ((equal? "J" (substring name 0 1))
+         10)
+        ((equal? "K" (substring name 0 1))
+         10)
+        ((equal? "Q" (substring name 0 1))
+         10)))
 
-
-;;funcion que recibe la lista con los jugadores y valida que la cantidad de jugadores sea de 1 a 3
-;;si la cantidad de jugadores es correcta le pasa la lista a la funcion "start"
-;;X >>> platerList
-
-(define (bCEj X)
-  (cond ((equal? 3 (howMany X))
-         (print (wrapper X '(0 0 0))))
-        ((equal? 2 (howMany X))
-         (print (wrapper X '(0 0))))
-        ((equal? 1 (howMany X))
-         (print (wrapper X '(0))))
-        ((null? X)
-         (print " no hay jugadores ")))
-  ;(shuffle deck)
+;Return the sum of cards in hand
+(define (handValue handList)
+  (cond((null? handList)0)
+       (else(+ (valueCard handList) (handValue (cdr handList))))
+    )
   )
 
-;select random element
-
-
-
-;Shuffle Deck
-(define (shuffle deck)
-  (print deck))
-
-;(shuffle deck)

@@ -273,6 +273,19 @@
    )
 
 ;************************************************************************************************************************************
+
+;Busted?
+(define (busted? num playerList)
+  (cond((equal? num 3)(handValue (cadr playerList)) )
+       ((equal? num 2)(handValue (cdadr playerList)) )
+       ((equal? num 1)(handValue (cddadr playerList)) )
+       ((equal? num 4)(handValue (cdr(cddadr playerList))) )
+       )
+  )
+
+
+
+
 ;Game Loop
 (define (game deck playerNum playerNum2 x x2 bool)
   ;Distribute Cards
@@ -313,14 +326,14 @@
   
   )
 
-
+;Main Function Runs The Game
 (define (bCEj X)
   (update table #f)
   (define playerNum (howMany X))
   (define player1 (car X))
   (define player2 (cadr X))
   (define player3 (caddr X))
-  (define deck (list "KC" "KD" "KH" "KS" "2C" "2D" "2H" "2S" "3C" "3D" "3H" "3S" "4C" "4D" "4H" "4S" "5C" "5D" "5H" "5S" "6C" "6D" "6H" "6S" "7C" "7D" "7H" "7S" "8C" "8D" "8H" "8S" "9C" "9D" "9H" "9S" "10C" "10D" "10H" "10S" "AC" "AD" "AH" "AS" "JC" "JD" "JH" "JS" "QC" "QD" "QH" "QS"))
+  (define deck (list   "KS" "4H" "2C" "10D" "JH" "7H" "KC"  "3C" "QD" "AS" "7S" "4S" "5D" "5H" "6C" "2D" "6D" "2H" "6S" "7C" "KD" "4C" "7D" "5S" "JC" "9C" "AH" "9D" "3D" "9S" "10C" "4D" "8C" "KH" "QC" "9H" "QH" "2S" "8D" "3S" "8H" "8S" "6H" "10H" "10S" "3H" "AC" "QS""AD" "JD" "JS" "5C"))
   (deckAvailable deck deckX deckY)
   (game deck playerNum playerNum p1X 30 #f)
   
