@@ -2,7 +2,7 @@
 
 (require graphics/graphics)
 (require games/cards)
-(require 2htdp/image)
+;(require 2htdp/image)
 
 ;(provide initGame)
 (require "Backend.rkt")
@@ -135,21 +135,30 @@
 (print "table draw")
   )
 ;********************************************************INIT SCORE VIEW*******************************************************************
+(define (drawScore message)
 ;******Images********
-(define scoreBackground-image((draw-pixmap score) "imgs/table.png" (make-posn 0 0)))
+(define scoreBackground-image((draw-pixmap score) "imgs/tablet.png" (make-posn 0 0)))
 
 ;*******Text*********
 
-;Title
-(define scoreTitle((draw-string score)(make-posn 10 10) "Scores" "yellow"))
-;Player1
-(define player1Title((draw-string score)(make-posn 10 20) "Player 1:" "yellow"))
-;Player2
-(define player2Title((draw-string score)(make-posn 10 30) "Player 2:" "yellow"))
-;Player3
-(define player3Title((draw-string score)(make-posn 10 40) "Player 3:" "yellow"))
+;Winner Label
+(define scoreTitle((draw-string score)(make-posn (/ (- windowW (* buttonW 2) -146) 2) 275) message "yellow"))
+
 
 ;******Buttons*******
+
+;Restart Button
+(define restartButton((draw-solid-rectangle score)(make-posn (/ (- windowW (* buttonW 2)) 2) 290) (* buttonW 2) buttonH "gray"))
+;Restart Button Text
+(define restartButtonText((draw-string score)(make-posn (/ (- windowW 50) 2) 310) "Restart" "black"))
+
+;Home Button
+(define homeButton((draw-solid-rectangle score)(make-posn (/ (- windowW (* buttonW 1.5)) 2) (+ buttonH 310)) (* buttonW 1.5) buttonH "gray"))
+;Home Button Text
+(define homeButtonText((draw-string score)(make-posn (/ (- windowW 40) 2) 365) "Home" "black"))
+  (print "score draw")
+  )
+
 ;********************************************************INIT ABOUT FRAME******************************************************************
 
 
@@ -217,12 +226,24 @@
     ((and (<= 440 (posn-x (mouse-click-posn click)) 560)
           (<= 455 (posn-y (mouse-click-posn click)) 490)) #t)
     (else (mouseTable-event(get-mouse-click window) ))))
+
+;Mouse Score Events
+(define (mouseScore-event click)
+  (sound "click")
+  (cond
+    ((and (<= 230 (posn-x (mouse-click-posn click)) 470)
+          (<= 290 (posn-y (mouse-click-posn click)) 325)) (update players #t))
+    ((and (<= 260 (posn-x (mouse-click-posn click)) 440)
+          (<= 345 (posn-y (mouse-click-posn click)) 380)) (update menu #t))
+    (else (mouseMenu-event(get-mouse-click window) ))))
+
 ;************************************************************************************************************************************
 ;*****Functions******
 
 ;Music
 (define (music)
   (play-sound "sound/music.wav" #t))
+
 
 ;Selection Sound
 (define (sound name)
@@ -241,6 +262,7 @@
     ((and (equal? bool #t)(equal? pixmap players))(mousePlayers-event(get-mouse-click window)))
     ((and (equal? bool #t)(equal? pixmap table))(mouseTable-event(get-mouse-click window)))
     ((and (equal? bool #t)(equal? pixmap about))(mouseAbout-event(get-mouse-click window)))
+    ((and (equal? bool #t)(equal? pixmap score))(mouseScore-event(get-mouse-click window)))
    )
   )
 ;************************************************************************************************************************************
@@ -257,11 +279,13 @@
   )
 ;Set Card in Table
 (define (setCard cardList x y)
+  ;(sound "flip")
   ((draw-pixmap table) (cardImage cardList #t) (make-posn x y))
   (update table #f))
 
 ;Set Deck in Table
 (define (deckAvailable cardList x y)
+  ;(sound "shuffle")
   (cond ((equal? (howMany cardList) 1)
          ((draw-pixmap table) (cardImage cardList #f) (make-posn x y)))
         ((> (howMany cardList) 1)
@@ -272,6 +296,7 @@
 
 ;********new card*****
 (define (newCard  deck x y)
+  (sound "flip")
   (setCard deck x y)
   ;(deckAvailable (cdr deck) 10 10)
   (update table #t)
@@ -281,29 +306,78 @@
 
 ;Busted?
 (define (busted? num playerList)
-  (cond((equal? num 3)
-        (cond((>(handValue (car playerList)) 21 )#t)))
-       ((equal? num 2)(cond((>(handValue (cadr playerList)) 21 )#t)))
-       ((equal? num 1)(cond((>(handValue (caddr playerList)) 21 )#t)))
-       ((equal? num 4)(cond((>(handValue (cadddr playerList) 21 )#t)))
-       )
-  ))
+  ;(print playerList)
+  (cond((and (equal? num 3) (> (handValue (car playerList)) 21 )  ) #t)
+
+       ((and (equal? num 2) (> (handValue (cadr playerList)) 21 )  ) #t)
+
+       ((and (equal? num 1) (> (handValue (caddr playerList)) 21 )   ) #t)
+
+       ((and (equal? num 4)  (> (handValue (cadddr playerList)) 21 )  ) #t)
+       ))
+  
 
 ;Winner?
+
+(define (winner playerList )
+
+  
+  (define message (string-append "Winner : Player" (selectWinner playerList (winnerAux (cdr playerList) (car playerList)) )  ))
+  (drawScore message)
+  (update score #t)
+
+  )
+
+;WinnerAux
+(define (winnerAux playerList win1)
+(print win1)
+(cond ((null? playerList) win1)
+      
+      ((< 21 (handValue win1)) (winnerAux (cdr playerList) (car playerList)))
+      
+      ((and (<= (handValue (car playerList)) 21) (< (handValue win1) (handValue (car playerList)))) (winnerAux (cdr playerList) (car playerList)))
+      
+      (else(winnerAux (cdr playerList) win1 ))
+  
+  )
+
+  )
+
+;Select Winner
+(define (selectWinner playerList hand)
+  ;(print hand)
+  (cond ((equal? hand (car playerList)) "1")
+        ((equal? hand (cadr playerList)) "2")
+        ((equal? hand (caddr playerList)) "3")
+        ((equal? hand (cadddr playerList)) "Dealer")
+
+
+
+    )
+  
+  )
 
 
 
 
 ;Add To Hand
 (define (addToHand playerList player card)
-  
-  (cond((equal? player 3)(append(car playerList)(list card) ))
-  ((equal? player 2)(append(cadr playerList)(list card) ))
-  ((equal? player 1)(append(caddr playerList)(list card) ))
-  ((equal? player 4)(append(cadddr playerList)(list card) ))
+  ;(print playerList)
+  (cond((equal? player 3) (wrapper playerList (list (list card) '() '() '()) )   )
+  ((equal? player 2)(wrapper playerList (list '() (list card) '() '()) ))
+  ((equal? player 1)(wrapper playerList (list '() '() (list card) '())  ))
+  ((equal? player 4)(wrapper playerList (list '() '() '() (list card))  ))
 )
   )
 
+;Dealer Turn
+
+(define (dealerTurn playerList deck)
+  (cond((>= (handValue (cadddr playerList)) 17) (sleep 3) (winner playerList))
+       (else (setCard deck (+ dealerX 30) dealerY) (dealerTurn (addToHand playerList 4 (car deck) ) (cdr deck)))
+       )
+
+  )
   
 
 
@@ -315,14 +389,14 @@
          (setCard deck p1X p1Y)
          (setCard (cdr deck) (+ p1X 15) p1Y)
          ;(deckAvailable (cddr deck)10 10)
-         (game playerList (cddr deck)(- playerNum 1) playerNum2 x x2 #f)
+         (game (addToHand (addToHand playerList 3 (car deck)) 3 (cadr deck)) (cddr deck)(- playerNum 1) playerNum2 x x2 #f)
          )
               
         ((equal? playerNum 2)
          (setCard deck p2X p1Y)
          (setCard (cdr deck) (+ p2X 15) p1Y)
          ;(deckAvailable (cddr deck)10 50)
-         (game playerList (cddr deck)(- playerNum 1) playerNum2 x x2 #f)
+         (game (addToHand (addToHand playerList 2 (car deck)) 2 (cadr deck)) (cddr deck)(- playerNum 1) playerNum2 x x2 #f)
          )
         
         ((equal? playerNum 1)
@@ -333,28 +407,35 @@
          ;Dealer Hand
          (setCard (cddr deck) dealerX dealerY)
          (setCard (cdddr deck) (+ dealerX 15) dealerY)
-         (game playerList (cddddr deck)(- playerNum 1 ) playerNum2 x x2 #t)
+         (game (addToHand (addToHand (addToHand (addToHand playerList 1 (car deck)) 1 (cadr deck)) 4 (caddr deck)) 4 (cadddr deck)) (cddddr deck)(- playerNum 1 ) playerNum2 x x2 #t)
          )))
   ;Players turns
        (else  (cond ((>= playerNum2 1)
                      (cond((equal?(update table #t) #t)
                            (newCard deck (+ x x2) p1Y)
-                           (print(addToHand playerList playerNum2 (car deck)))
-                           (game playerList (cdr deck) playerNum playerNum2 x (+ x2 15) #t)
+
+
                            
-                           ;(print playerList)
+                    
                            
-                           ;(cond((equal? (busted? playerList playerNum2) #f))
-                           ;(game playerList (cdr deck) playerNum playerNum2 x (+ x2 15) #t)
-                           ;(else (print "busted")(game playerList deck  playerNum (- playerNum2 1) (+ x 200) 30 #t) )
-                           ;)
+                           
+                           (cond ((equal? #t (busted? playerNum2 (addToHand playerList playerNum2 (car deck)) ))
+                                  
+                                  (game (addToHand playerList playerNum2 (car deck)) (cdr deck) playerNum (- playerNum2 1) (+ x 200) 30 #t) )
+
+                                 
+                                 (else (game (addToHand playerList playerNum2 (car deck)) (cdr deck) playerNum playerNum2 x (+ x2 15) #t))
+                                 )
 
 
                            
                            )
-                          (else (print (string-append "turn player:" (number->string playerNum2)))(game playerList deck  playerNum (- playerNum2 1) (+ x 200) 30 #t))))
-              (else(print "hay ganador")(update menu #t)))
+                          (else (print "turn ended") (game playerList deck  playerNum (- playerNum2 1) (+ x 200) 30 #t))))
+
+                     ;Dealer turn
+                    (else  (dealerTurn playerList deck)))
               )
+      
        )
   
   )
@@ -365,11 +446,9 @@
   (drawTable)
   (update table #f)
   (define playerNum (- (howMany X) 1))
-  ;(define playerList(wrapper X '('() '() '() '())))
-  ;(print playerList)
   (define deck (list   "KS" "4H" "2C" "3C" "10D" "JH" "7H" "KC" "QD" "AS" "7S" "4S" "5D" "5H" "6C" "2D" "6D" "2H" "6S" "7C" "KD" "4C" "7D" "5S" "JC" "9C" "AH" "9D" "3D" "9S" "10C" "4D" "8C" "KH" "QC" "9H" "QH" "2S" "8D" "3S" "8H" "8S" "6H" "10H" "10S" "3H" "AC" "QS""AD" "JD" "JS" "5C"))
   (deckAvailable deck deckX deckY)
-  (game X (barajar deck (random 6)) playerNum playerNum p1X 30 #f)
+  (game X (barajar deck (random 9)) playerNum playerNum p1X 30 #f)
   
   )
 

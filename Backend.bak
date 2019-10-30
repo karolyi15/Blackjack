@@ -1,9 +1,0 @@
-#lang racket
-
-;;funcion que cuenta la cantidad de jugadores participando y devuelve este numero
-;;Plist >>> lista de jugadores
-(define (howMany Plist)
-  (cond ((null? Plist)
-         0)
-        (else
-         (+ 1 (howMany (cdr Plist))))))
